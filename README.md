@@ -1,96 +1,120 @@
 # Urban Safety Perception Modelling
+**Track the Space, Decode the Fear**
 
-> **Polynomial Regression Analysis of Spatial Metrics and Visual Features in London Streetscapes — Discovering Non-Linear Relationships and Interaction Effects**
+## Project Overview
+This project investigates how spatial configuration and visual environment 
+jointly shape pedestrians' perception of safety in urban streetscapes.
+By combining Space Syntax metrics with street-view semantic segmentation, 
+we built an analytical pipeline that models perceived safety from both 
+2D connectivity structure and 3D visual features.
 
-This repository contains the data analysis code for a research project that investigates how 2D spatial configurations (via Space Syntax) and 3D visual features (via semantic segmentation of street-view images) jointly influence perceived safety in London's urban environments.
+**Research Question:** How do spatial configuration (connectivity, accessibility) 
+and visual environment (greenery, sky openness) jointly influence 
+pedestrians' perceived safety in London's urban streetscapes — 
+and do these relationships follow linear or non-linear patterns?
 
-## Research Overview
+---
 
-Urban safety perception is a critical factor influencing people's ability to move around and interact in public spaces. While previous studies have explored spatial configuration (Space Syntax) and visual perception (street-view analysis) separately, this project bridges the gap by combining both approaches within a unified analytical framework.
+## Pipeline Overview
 
-### Key Findings
+- Crowdsourced Safety Data Collection (Place Pulse 2.0 · ~900 London locations)
+- Space Syntax Metric Extraction (Integration INT2K + Choice CH2K · 2km radius)
+- Street-View Semantic Segmentation (SegFormer-B0 · ADE20K)
+- Visual Feature Derivation (Green View Ratio + Sky Visibility)
+- Multi-Variable Regression Modelling (Linear → Polynomial → Interaction)
+- Extreme Case Analysis (Min/Max identification for qualitative validation)
 
-- **Weak linear correlations** exist between individual predictors and perceived safety (baseline R² ≈ 0.017)
-- **Non-linear (polynomial) models** significantly improve explanatory power (R² ≈ 0.081)
-- **Inverted U-shaped relationships**: moderate levels of integration, greenery, and sky openness are associated with higher safety scores, while extreme values reduce perceived safety
-- **Interaction effects**: spatial connectivity has a stronger positive impact when accompanied by sufficient visual openness and green space coverage
+---
 
-## Data Sources
+## Methods
 
-| Source | Description |
-|--------|-------------|
-| **Place Pulse 2.0** | Crowdsourced safety perception scores (~900 London locations) |
-| **Space Syntax Open Mapping** | Spatial configuration metrics (Integration & Choice at 2km radius) |
-| **SegFormer-B0 (ADE20K)** | Semantic segmentation of street-view images for green view ratio & sky visibility |
+### Data Collection
+- Selected ~900 georeferenced locations across London from **Place Pulse 2.0** (MIT Media Lab)
+- Safety perception scores derived via **TrueSkill** pairwise comparison algorithm
+- Space Syntax metrics sourced from **Space Syntax Open Mapping** (OS Meridian 2 road network)
+- Street View Images processed locally via **SegFormer-B0** (ADE20K fine-tune, Hugging Face)
 
-## Models
+### Feature Extraction
+- **Spatial features:** INT2K (Integration) and CH2K (Choice) quantify 
+  how connected and how traversed each street segment is at 2km radius
+- **Visual features:** SegFormer-B0 pixel-classifies each SVI into 150 semantic 
+  categories; green_view_ratio and sky_visibility derived from class proportions
+- **Multicollinearity check:** VIF and Pearson correlation confirm INT2K–CH2K 
+  collinearity (r = 0.681), informing model variable selection
 
-The project implements four regression models with increasing complexity:
+### Regression Models
+- **Linear baseline** establishes individual predictor effects
+- **Polynomial regression (Degree 2)** adds quadratic and cross-product terms 
+  to capture non-linear and interaction effects
+- **Interaction-focused model** isolates theoretically motivated term pairs 
+  (e.g. INT2K × green_view_ratio, green_view_ratio × sky_visibility)
+- **Enhanced linear model** combines linear terms with targeted interaction terms 
+  selected from domain knowledge
 
-### 1. Multiple Linear Regression (Baseline)
+### Extreme Case Analysis
+- Identified locations with maximum/minimum values for each variable
+- Exported to CSV for qualitative streetscape comparison
+- Validates model direction: high-INT2K + closed-sky → suppressed safety scores
 
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_4 + \varepsilon$$
+---
 
-### 2. Polynomial Regression (Degree 2)
+## Key Findings
+- Identified **non-linear threshold effects**: moderate integration, greenery, 
+  and sky openness associate with highest safety scores; extremes in either 
+  direction reduce perceived safety
+- **Inverted-U relationships** across all four predictors — over-integrated 
+  commercial corridors and visually enclosed spaces both score lower than mid-range environments
+- **Cross-modal interaction effects**: spatial connectivity (INT2K) shows 
+  stronger positive effect when co-occurring with sufficient visual openness 
+  and green coverage
+- **INT2K as dominant predictor** (r = 0.072); CH2K contributes negligible 
+  independent variance (r ≈ 0), likely due to high collinearity with INT2K
 
-$$Y = \beta_0 + \sum_{i=1}^{4} \beta_i X_i + \sum_{i=1}^{4} \gamma_i X_i^2 + \sum_{i=1}^{3} \sum_{j=i+1}^{4} \delta_{ij} X_i X_j + \varepsilon$$
+---
 
-### 3. Interaction Effect Model
+## Limitations
+- Moderate dataset size (~900 locations) limits generalisation across city types
+- Place Pulse 2.0 reflects a global, non-London-specific crowd; local 
+  cultural safety norms may introduce bias
+- Static SVIs do not capture temporal variation (day/night, seasonal change)
+- SegFormer-B0 trained on ADE20K; domain shift may affect fine-grained 
+  streetscape categories
 
-Focuses on six theoretically motivated interaction terms without quadratic terms.
+## Future Work
+- Extend pipeline to Chinese cities using OSMnx-derived Space Syntax + 
+  local pairwise perception data
+- Incorporate dynamic SVIs and temporal safety variation
+- Replace polynomial regression with spatially-aware models 
+  (GWR, spatial lag) to account for geographic clustering
 
-### 4. Enhanced Linear Model with Targeted Interactions
-
-Combines linear effects with specific, theory-driven interaction terms (e.g., INT2K × green_view_ratio, green_view_ratio × sky_visibility).
-
-**Variables:**
-- `X₁` = INT2K (Integration at 2km radius)
-- `X₂` = CH2K (Choice at 2km radius)
-- `X₃` = green_view_ratio
-- `X₄` = sky_visibility
-- `Y` = safer_Trueskill_Scores (safety perception)
-
-## Repository Structure
-
-```
-02_DataAnalysis/
-├── Formula.ipynb          # Mathematical model formulations & notation reference
-├── SS_Model_V1.ipynb      # Space Syntax baseline regression analysis
-│                            - Multiple regression (INT2K + CH2K → Safety)
-│                            - Correlation analysis & VIF multicollinearity check
-│                            - Residual diagnostics & outlier detection
-│                            - Visualization (distributions, scatter plots, heatmaps)
-└── min_max.ipynb           # Extreme value analysis
-                             - Identifies max/min for all key variables
-                             - Exports extreme values to CSV for qualitative case study
-```
-
-## Quick Start
-
-### Prerequisites
-
-```bash
-pip install pandas numpy matplotlib seaborn statsmodels scikit-learn scipy
-```
-
-### Running the Analysis
-
-1. **Baseline Regression** — Open `SS_Model_V1.ipynb` to run the Space Syntax multiple regression model
-2. **Extreme Values** — Open `min_max.ipynb` to identify and export extreme cases for qualitative analysis
-3. **Model Reference** — See `Formula.ipynb` for all mathematical formulations
+---
 
 ## Tech Stack
+- Python, Jupyter Notebook
+- HuggingFace Transformers (SegFormer-B0)
+- statsmodels (OLS, VIF diagnostics)
+- scikit-learn (PolynomialFeatures, StandardScaler)
+- pandas / numpy / matplotlib / seaborn / scipy
 
-- **Python 3.12** with Jupyter Notebook
-- **pandas / numpy** — data manipulation
-- **statsmodels** — OLS regression & diagnostics
-- **scikit-learn** — StandardScaler, PolynomialFeatures
-- **matplotlib / seaborn** — visualization
-- **scipy** — statistical tests (Shapiro-Wilk)
+## Dependencies
+```bash
+pip install pandas numpy matplotlib seaborn statsmodels scikit-learn scipy transformers
+```
 
-## Study Area
+---
 
-London, UK — selected for its urban complexity, rich historical depth, and abundant open spatial data resources. The final dataset covers diverse environments from central business districts to residential neighbourhoods.
+## Repository Structure
+```
+02_DataAnalysis/
+├── Formula.ipynb           # Mathematical model formulations & notation reference
+├── SS_Model_V1.ipynb       # Main regression analysis
+│                             - Linear & polynomial regression
+│                             - Correlation, VIF, residual diagnostics
+│                             - Distribution & scatter visualisation
+└── min_max.ipynb           # Extreme value identification & CSV export
+```
+
+---
 
 ## License
 
@@ -101,3 +125,10 @@ This project is for academic research purposes. Please cite the original dissert
 - [Place Pulse 2.0](http://pulse.media.mit.edu/) — MIT Media Lab
 - [Space Syntax Open Mapping](https://www.spacesyntax.net/)
 - [SegFormer](https://huggingface.co/nvidia/segformer-b0-finetuned-ade-512-512) — NVIDIA / Hugging Face
+
+---
+
+## Team
+- **Rui Gu** — Research Design, Feature Engineering, Statistical Modelling, Interpretation
+
+*UCL Bartlett · MSc Architectural Computation · Dissertation, 2025*
