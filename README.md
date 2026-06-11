@@ -37,7 +37,7 @@ Standard urban safety research treats spatial configuration and visual environme
 
 > **How do spatial configuration (connectivity, accessibility) and visual environment (greenery, sky openness) jointly influence pedestrians' perceived safety in London streetscapes — and do these relationships follow linear or non-linear patterns?**
 
-We operationalize this through a four-predictor regression framework using crowdsourced pairwise safety scores (Place Pulse 2.0) as ground truth. We hypothesize that **polynomial terms and cross-modal interaction effects** will reveal threshold dynamics invisible to linear models — specifically that mid-range values of integration and visual openness, not extremes, correlate with highest perceived safety.
+I operationalize this through a four-predictor regression framework using crowdsourced pairwise safety scores (Place Pulse 2.0) as ground truth. We hypothesize that **polynomial terms and cross-modal interaction effects** will reveal threshold dynamics invisible to linear models — specifically that mid-range values of integration and visual openness, not extremes, correlate with highest perceived safety.
 
 ---
 
