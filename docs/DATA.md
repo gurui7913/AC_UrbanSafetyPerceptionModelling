@@ -24,9 +24,16 @@ The audit found 900 unique IDs in each of the three local input tables, identica
 
 ## What is included
 
-- `data/legacy/safer_min12.csv`: previously tracked global safer-dimension export, moved from the preprocessing folder. It has 36,783 rows and is not the 900-row London modelling table.
 - `results/model_comparison_results.csv`: aggregate three-model comparison copied from the existing local export.
-- `results/legacy/`: descriptive statistics and extreme-case exports already present in the remote repository. The two summary files belong to different contexts and are kept separately.
+
+## Previously uploaded exports, now local only
+
+The following files were removed from the current GitHub tree on 2026-10-08 by untracking them. Their local files are preserved, and both legacy folders are ignored to prevent accidental re-upload. Git history was not rewritten.
+
+- `data/legacy/safer_min12.csv`: previously uploaded global safer-dimension export, with 36,783 rows; not the London modelling table.
+- `results/legacy/preprocessing/extreme_values_analysis.csv`: historical extreme-case export.
+- `results/legacy/preprocessing/summary_statistics.csv`: historical preprocessing summary.
+- `results/legacy/analysis/summary_statistics.csv`: historical analysis summary.
 
 ## What stays local
 

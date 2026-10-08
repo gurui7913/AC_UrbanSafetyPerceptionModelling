@@ -51,10 +51,8 @@ The models explain a small portion of the observed variation. There is no execut
 ```text
 01_DataProcessing/          Original preparation, spatial matching and segmentation notebooks
 02_DataAnalysis/            Original baseline, combined model, formulas and extreme-case notebooks
-data/legacy/                One pre-existing safety-score export, retained from Git history
 results/
   model_comparison_results.csv  Aggregate comparison exported by the original analysis
-  legacy/                   Previously tracked descriptive / extreme-case exports
 docs/
   DATA.md                   Exact inputs, schemas and manual preparation requirements
   AUDIT.md                  Audit findings and verification limits
@@ -100,7 +98,7 @@ Notebook outputs and execution counts were cleared during organization; original
 
 ## Data and reuse
 
-The complete street-view image collection, raw TSVs, GIS layers, thesis drafts, and personal discussion documents are outside this repository. The small legacy table was already tracked before this cleanup and is not a complete modelling dataset.
+The complete street-view image collection, raw TSVs, GIS layers, thesis drafts, and personal discussion documents are outside this repository. Previously uploaded legacy data and descriptive exports have been removed from the current GitHub tree and retained locally under ignored `data/legacy/` and `results/legacy/` folders. Existing Git history is preserved.
 
 Data and pretrained weights remain subject to their respective providers' terms. No new open-source license is granted by this cleanup; the repository does not currently contain a standalone software license. Contact the author about reuse and cite the dissertation when referring to this research.
 

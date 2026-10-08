@@ -26,3 +26,7 @@ Thumbs.db
 *.pt
 *.pth
 *.safetensors
+
+# Historical exports retained locally, removed from the GitHub working tree
+/data/legacy/
+/results/legacy/

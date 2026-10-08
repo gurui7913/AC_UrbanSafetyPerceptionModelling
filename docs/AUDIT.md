@@ -42,3 +42,7 @@ No raw-data preprocessing, GIS rematching, model download, GPU inference, or ful
 The public Git checkout is the active code copy. The surrounding dissertation directory remains the archival home of source data, thesis versions, drawings, and submitted supplementary material. Its local root README provides navigation. Original historical folders remain intact to preserve references and submission provenance; they should not be edited as the active project.
 
 No raw images, new location-level inputs, thesis drafts, or discussion files were added to Git. Existing public data exports remain traceable through Git history. Clearing notebook outputs does not remove their previous versions from Git history.
+
+## Follow-up: current GitHub tree cleanup
+
+On 2026-10-08, the user requested removal of previously uploaded residual files from the current GitHub tree, with all local files retained and no history rewrite. The four CSV exports under `data/legacy/` and `results/legacy/` were untracked and the folders added to `.gitignore`. Their local SHA-256 hashes were checked before and after untracking. The code notebooks and aggregate `results/model_comparison_results.csv` remain tracked. This follow-up supersedes the earlier policy of retaining legacy exports in the public working tree; their historical Git versions remain available.
