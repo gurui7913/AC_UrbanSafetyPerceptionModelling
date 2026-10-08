@@ -1,0 +1,9 @@
+# Full preprocessing / segmentation dependencies, in addition to analysis.
+-r requirements.txt
+geopandas
+shapely
+folium
+Pillow
+torch
+transformers
+safetensors

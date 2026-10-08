@@ -1,0 +1,11 @@
+# Analysis-only dependencies inferred from notebook imports.
+# This is not the original 2025 environment or a tested lockfile.
+jupyterlab
+ipykernel
+pandas
+numpy
+matplotlib
+seaborn
+scipy
+scikit-learn
+statsmodels

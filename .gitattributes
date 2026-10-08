@@ -1,0 +1,6 @@
+* text=auto
+*.md text eol=lf
+*.ipynb text eol=lf
+*.csv -text
+*.txt text eol=lf
+*.json text eol=lf

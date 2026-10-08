@@ -1,0 +1,28 @@
+# Local runtimes and execution caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+# Credentials and machine configuration
+.env
+.env.*
+!.env.example
+# Office locks and OS files
+~$*
+.DS_Store
+Thumbs.db
+# Local research inputs and generated outputs
+/data/local/
+/outputs/
+*.gpkg
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.qgz
+*.pt
+*.pth
+*.safetensors
