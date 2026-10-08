@@ -46,3 +46,7 @@ No raw images, new location-level inputs, thesis drafts, or discussion files wer
 ## Follow-up: current GitHub tree cleanup
 
 On 2026-10-08, the user requested removal of previously uploaded residual files from the current GitHub tree, with all local files retained and no history rewrite. The four CSV exports under `data/legacy/` and `results/legacy/` were untracked and the folders added to `.gitignore`. Their local SHA-256 hashes were checked before and after untracking. The code notebooks and aggregate `results/model_comparison_results.csv` remain tracked. This follow-up supersedes the earlier policy of retaining legacy exports in the public working tree; their historical Git versions remain available.
+
+## Follow-up: consistent repository naming
+
+On 2026-10-08, the seven notebooks were grouped under `notebooks/01_data_preparation/` and `notebooks/02_model_analysis/`, with numbered lowercase English names. Documentation and the full dependency filename were also normalized to underscores. The complete old-to-new mapping is in [file_rename_map.csv](file_rename_map.csv). Notebook files were renamed without changing their bytes or source cells. The source manifest continues to point to the unchanged original local snapshots, while its active notebook paths use the new names. README links and local interview-preparation links were updated. Legacy CSV files remain local and ignored.

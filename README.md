@@ -4,7 +4,7 @@ Combining Space Syntax and street-view semantic segmentation to explore perceive
 
 **Gu Rui · UCL Bartlett · MSc Architectural Computation dissertation · 2025**
 
-[中文说明](README.zh-CN.md) · [Data requirements](docs/DATA.md) · [Repository audit](docs/AUDIT.md)
+[中文说明](README.zh-CN.md) · [Data requirements](docs/data_requirements.md) · [Repository audit](docs/repository_audit.md)
 
 This repository contains the original research notebooks, reorganized and documented in October 2026. It is a research archive with local-data prerequisites. The full data pipeline is not yet portable or reproducible from a fresh clone alone.
 
@@ -32,7 +32,7 @@ The outcome is perceived safety, not recorded crime or a causal measure of stree
 
 Both visual features are **percentages (0–100)**. Flower pixels are not included by the original implementation. Segmentation logits are resized to the original image dimensions before classification.
 
-`MergedData_Model_V2.ipynb` standardizes four predictors and fits three models:
+`02_spatial_visual_models.ipynb` standardizes four predictors and fits three models:
 
 | Model | Predictors, excluding intercept | Recorded in-sample R² | Adjusted R² |
 | --- | ---: | ---: | ---: |
@@ -40,7 +40,7 @@ Both visual features are **percentages (0–100)**. Flower pixels are not includ
 | Degree-2 polynomial | 14 | 0.080896 | 0.066357 |
 | Linear + pairwise interactions | 10 | 0.034764 | 0.023906 |
 
-The interaction model includes all six pairwise products. The current code does not fit a separate fourth model using only two interactions. `Formula.ipynb` retains historical conceptual formulations and should be read alongside the implementation.
+The interaction model includes all six pairwise products. The current code does not fit a separate fourth model using only two interactions. `04_model_formulations.ipynb` retains historical conceptual formulations and should be read alongside the implementation.
 
 Values come from [the saved comparison table](results/model_comparison_results.csv). During the 2026 audit, all three R² values were independently recomputed with NumPy least squares from the existing local modelling table and agreed within `1e-10`. This verifies the reported fits; it does not validate upstream spatial matching or segmentation accuracy.
 
@@ -49,29 +49,40 @@ The models explain a small portion of the observed variation. There is no execut
 ## Repository layout
 
 ```text
-01_DataProcessing/          Original preparation, spatial matching and segmentation notebooks
-02_DataAnalysis/            Original baseline, combined model, formulas and extreme-case notebooks
+notebooks/
+  01_data_preparation/
+    01_prepare_safety_scores.ipynb
+    02_match_street_network.ipynb
+    03_extract_visual_features.ipynb
+  02_model_analysis/
+    01_spatial_baseline.ipynb
+    02_spatial_visual_models.ipynb
+    03_extreme_value_analysis.ipynb
+    04_model_formulations.ipynb
 results/
-  model_comparison_results.csv  Aggregate comparison exported by the original analysis
+  model_comparison_results.csv
 docs/
-  DATA.md                   Exact inputs, schemas and manual preparation requirements
-  AUDIT.md                  Audit findings and verification limits
-  notebook-source-manifest.json  Source hashes and original local notebook locations
-requirements.txt            Analysis dependencies inferred from imports
-requirements-full.txt       Additional GIS / segmentation dependencies
+  data_requirements.md
+  repository_audit.md
+  notebook_source_manifest.json
+  file_rename_map.csv
+requirements.txt
+requirements_full.txt
 ```
+
+All active folders and descriptive filenames use lowercase English with underscores. Numbered notebook names indicate their reading or processing order within each stage. Standard entry files such as `README.md` retain conventional names. Previous names are recorded in [the rename map](docs/file_rename_map.csv).
 
 ## Notebook guide
 
 | Stage | Notebook | Role |
 | --- | --- | --- |
-| 1 | [Place Pulse preparation](01_DataProcessing/20250521%20PP数据集合并简化.ipynb) | Prepare, filter and normalize scores |
-| 2 | [Location_SaferScores_SS](01_DataProcessing/Location_SaferScores_SS.ipynb) | London subset, point-to-line matching, network feature export |
-| 3 | [ImageSegmentation](01_DataProcessing/ImageSegmentation.ipynb) | Extract image greenery and sky percentages |
-| 4 | [SS_Model_V1](02_DataAnalysis/SS_Model_V1.ipynb) | Spatial-only OLS baseline with two predictors |
-| 5 | [MergedData_Model_V2](02_DataAnalysis/MergedData_Model_V2.ipynb) | Main combined spatial + visual analysis and model comparison |
-| Reference | [Formula](02_DataAnalysis/Formula.ipynb) | Historical model equations |
-| Supplement | [min_max](02_DataAnalysis/min_max.ipynb) | Extreme values of the spatial table and safety scores |
+| 1 | [Place Pulse preparation](notebooks/01_data_preparation/01_prepare_safety_scores.ipynb) | Prepare, filter and normalize scores |
+| 2 | [Street-network matching](notebooks/01_data_preparation/02_match_street_network.ipynb) | London subset, point-to-line matching, network feature export |
+| 3 | [Visual feature extraction](notebooks/01_data_preparation/03_extract_visual_features.ipynb) | Extract image greenery and sky percentages |
+| 4 | [Spatial baseline](notebooks/02_model_analysis/01_spatial_baseline.ipynb) | Spatial-only OLS baseline with two predictors |
+| 5 | [Spatial + visual models](notebooks/02_model_analysis/02_spatial_visual_models.ipynb) | Main combined spatial + visual analysis and model comparison |
+| Reference | [Model formulations](notebooks/02_model_analysis/04_model_formulations.ipynb) | Historical model equations |
+| Supplement | [Extreme-value analysis](notebooks/02_model_analysis/03_extreme_value_analysis.ipynb) | Extreme values of the spatial table and safety scores |
 
 ## Running locally
 
@@ -84,15 +95,15 @@ python -m pip install -r requirements.txt
 jupyter lab
 ```
 
-For GIS preprocessing and image segmentation, also install `requirements-full.txt`. The segmentation notebook downloads its model weights on first use.
+For GIS preprocessing and image segmentation, also install `requirements_full.txt`. The segmentation notebook downloads its model weights on first use.
 
 Before running any notebook:
 
-1. Obtain the inputs listed in [docs/DATA.md](docs/DATA.md).
+1. Obtain the inputs listed in [docs/data_requirements.md](docs/data_requirements.md).
 2. Replace all hard-coded Windows input **and output** paths with paths on your machine. Several cells write to the original data folders.
-3. If starting from raw data, resolve the coordinate-system issue described in [docs/AUDIT.md](docs/AUDIT.md) before regenerating the spatial table.
+3. If starting from raw data, resolve the coordinate-system issue described in [docs/repository_audit.md](docs/repository_audit.md) before regenerating the spatial table.
 4. Prepare `merged_data.csv` explicitly by a validated one-to-one `location_id` join. Its creation is not implemented in the archived notebooks.
-5. Restart the kernel and run the relevant notebook in order. For modelling only, use the prepared spatial table for V1 and the merged table for V2.
+5. Restart the kernel and run the relevant notebook in order. For modelling only, use the prepared spatial table for `01_spatial_baseline.ipynb` and the merged table for `02_spatial_visual_models.ipynb`.
 
 Notebook outputs and execution counts were cleared during organization; original executed copies remain in the local dissertation archive. Notebook source cells were preserved exactly.
 
