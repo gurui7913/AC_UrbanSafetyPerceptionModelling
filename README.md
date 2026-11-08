@@ -6,7 +6,7 @@ Combining Space Syntax and street-view semantic segmentation to explore perceive
 
 [中文说明](README.zh-CN.md) · [Data requirements](docs/data_requirements.md) · [Repository audit](docs/repository_audit.md)
 
-This repository contains the original research notebooks, reorganized and documented in October 2026. It is a research archive with local-data prerequisites. The full data pipeline is not yet portable or reproducible from a fresh clone alone.
+This repository contains the original research notebooks, reorganized and documented in October 2025. It is a research archive with local-data prerequisites. The full data pipeline is not yet portable or reproducible from a fresh clone alone.
 
 ## Research and pipeline
 
